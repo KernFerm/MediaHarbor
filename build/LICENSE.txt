@@ -1,0 +1,34 @@
+Copyright Notice and Proprietary License
+
+Copyright (c) 2026 MediaHarbor contributors
+All rights reserved.
+
+This software and all associated files, source code, installer assets, text,
+graphics, and documentation are protected by copyright law.
+
+Permission is granted to end users to install and use MediaHarbor for
+personal lawful use only, subject to the restrictions below.
+
+You may not, without prior written permission from the copyright holder:
+
+1. Copy, modify, adapt, translate, reverse engineer, decompile, or create
+   derivative works based on this software, except where such activity cannot
+   be restricted under applicable law.
+2. Redistribute, sublicense, rent, lease, sell, publish, or commercially
+   exploit this software or any modified version of it.
+3. Remove, alter, or obscure any copyright, attribution, or legal notices.
+4. Use this software in a way that violates applicable law, platform terms,
+   intellectual property rights, or privacy rights.
+
+This software is provided "as is" without warranties of any kind, express or
+implied, including but not limited to warranties of merchantability, fitness
+for a particular purpose, title, and noninfringement.
+
+To the maximum extent permitted by law, the copyright holder and contributors
+shall not be liable for any claims, damages, or other liability, whether in an
+action of contract, tort, or otherwise, arising from or in connection with the
+software or the use of the software.
+
+No trademark rights, patent rights, or other intellectual property rights are
+granted except the limited right to install and use the software as expressly
+stated above.

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; style-src 'self'; script-src 'self'; connect-src 'self' https: http://127.0.0.1:* http://localhost:*; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediaHarbor</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="dark">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <p class="eyebrow">Lawful public media tools</p>
+        <h1>MediaHarbor</h1>
+        <p class="subtitle">Private, local-first downloads and optional encrypted tunnel routing for public links only.</p>
+      </div>
+
+      <div class="sidebar-card">
+        <span class="badge" id="privacyModeBadge">Local-first mode</span>
+        <span class="badge alt" id="downloadModeLabel">Video / media mode</span>
+        <button id="themeToggle" class="secondary-btn" type="button">Toggle theme</button>
+      </div>
+
+      <div class="sidebar-card legal-note">
+        <h2>Legal Use</h2>
+        <p>Use this app only with public content you own or have permission to save. No DRM bypassing, private account access, paywall bypassing, or login-gated scraping is included.</p>
+        <div class="shortcut-note">
+          <span class="meta-label">Shortcut keys</span>
+          <ul class="shortcut-list">
+            <li><kbd>Ctrl</kbd><span>+</span><kbd>L</kbd><span>Focus the public link box</span></li>
+            <li><kbd>Ctrl</kbd><span>+</span><kbd>V</kbd><span>Paste into the selected field</span></li>
+            <li><kbd>Right-click</kbd><span>Open the edit menu</span></li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-grid">
+      <section class="panel hero-panel onboarding-panel" id="onboardingPanel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Welcome</p>
+            <h2>Start with a public link</h2>
+          </div>
+          <button id="dismissOnboardingBtn" class="secondary-btn" type="button">Hide tips</button>
+        </div>
+        <div id="onboardingContent">
+          <div class="plain-list onboarding-steps">
+            <div>
+              <strong>1. Paste a public video or post link.</strong>
+              <span>The app works best with public links supported by yt-dlp, like YouTube, Instagram, TikTok, X, and Reddit.</span>
+            </div>
+            <div>
+              <strong>2. Click Preview.</strong>
+              <span>You can check the title, thumbnail, and available quality before saving anything.</span>
+            </div>
+            <div>
+              <strong>3. Choose where to save it, then click Download.</strong>
+              <span>Most people only need local download mode. Advanced tunnel privacy options are optional.</span>
+            </div>
+          </div>
+          <div class="supported-sites-inline">
+            <span class="meta-label">Supported public platforms</span>
+            <div class="support-grid">
+              <span class="support-chip">YouTube</span>
+              <span class="support-chip">Instagram</span>
+              <span class="support-chip">TikTok</span>
+              <span class="support-chip">X / Twitter</span>
+              <span class="support-chip">Reddit</span>
+              <span class="support-chip">And many more</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel hero-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Downloader</p>
+            <h2>Paste a public link</h2>
+          </div>
+          <p class="status" id="statusMessage" data-tone="info">Ready for a public URL.</p>
+        </div>
+
+        <label class="field">
+          <span>Public link</span>
+          <input id="urlInput" type="url" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off">
+        </label>
+
+        <div class="action-row">
+          <button id="fetchMetadataBtn" class="primary-btn" type="button">Preview</button>
+          <button id="downloadBtn" class="accent-btn" type="button">Start download</button>
+          <button id="cancelBtn" class="secondary-btn" type="button">Cancel latest</button>
+        </div>
+
+        <div class="grid-two">
+          <label class="field">
+            <span>Quality / format</span>
+            <select id="qualitySelect">
+              <option value="">Auto / best available</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Audio output</span>
+            <select id="audioFormatSelect">
+              <option value="mp3">MP3</option>
+              <option value="m4a">M4A</option>
+              <option value="wav">WAV</option>
+              <option value="flac">FLAC</option>
+              <option value="opus">OPUS</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="toggles">
+          <label><input id="audioOnlyToggle" type="checkbox"> Audio-only download</label>
+          <label><input id="advancedToggle" type="checkbox"> Show advanced options</label>
+        </div>
+
+        <div class="grid-two">
+          <label class="field">
+            <span>Save folder</span>
+            <div class="inline-input">
+              <input id="outputFolderInput" type="text" placeholder="Choose a local folder">
+              <button id="outputFolderBtn" class="secondary-btn" type="button">Browse</button>
+            </div>
+          </label>
+        </div>
+
+        <section id="advancedSection" class="advanced-section" hidden>
+          <div class="panel-header compact-header">
+            <div>
+              <p class="eyebrow">Advanced</p>
+              <h2>Privacy Tunnel (Advanced)</h2>
+            </div>
+          </div>
+          <p class="helper-text">Most people can leave this off. These settings are mainly for private self-hosted tunnel use.</p>
+          <div class="toggles">
+            <label><input id="forceTunnelToggle" type="checkbox"> Use Privacy Tunnel (Advanced)</label>
+          </div>
+          <div class="grid-two">
+          <label class="field">
+            <span>Private backend address</span>
+            <input id="backendUrlInput" type="url" placeholder="https://your-private-backend.example.com">
+          </label>
+
+            <label class="field">
+              <span>Backend access token</span>
+              <input id="backendAccessTokenInput" type="password" placeholder="Only needed if your private backend uses one">
+            </label>
+          </div>
+        </section>
+      </section>
+
+      <section class="panel metadata-panel" id="metadataCard" hidden>
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Metadata</p>
+            <h2 id="metadataTitle">Untitled</h2>
+          </div>
+          <img id="thumbnailImage" alt="Media thumbnail">
+        </div>
+        <div class="meta-grid">
+          <div>
+            <span class="meta-label">Artist / uploader</span>
+            <p id="metadataUploader">Unknown uploader</p>
+          </div>
+          <div>
+            <span class="meta-label">Duration</span>
+            <p id="metadataDuration">Unknown duration</p>
+          </div>
+        </div>
+        <div>
+          <span class="meta-label">Available formats</span>
+          <ul id="metadataFormats" class="plain-list"></ul>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Transfers</p>
+            <h2>Active downloads</h2>
+          </div>
+        </div>
+        <ul id="downloadList" class="plain-list">
+          <li>No active downloads.</li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">History</p>
+            <h2>Local device only</h2>
+          </div>
+          <button id="historyClearBtn" class="secondary-btn" type="button">Clear history</button>
+        </div>
+        <ul id="historyList" class="plain-list">
+          <li>No local download history yet.</li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Settings</p>
+            <h2>Defaults</h2>
+          </div>
+        </div>
+        <form id="settingsForm" class="settings-stack">
+          <p class="helper-text">Your settings stay on this device. Sensitive values are encrypted, and your download history stays local.</p>
+          <button class="primary-btn" type="submit">Save settings</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Offline Tools</p>
+            <h2>Local processing</h2>
+          </div>
+        </div>
+        <div class="grid-two">
+          <label class="field">
+            <span>Input path</span>
+            <div class="inline-input">
+              <input id="processInputPath" type="text" placeholder="Choose a media file">
+              <button id="processInputBrowseBtn" class="secondary-btn" type="button">Browse</button>
+            </div>
+          </label>
+          <label class="field">
+            <span>Output path</span>
+            <div class="inline-input">
+              <input id="processOutputPath" type="text" placeholder="Choose where to save the processed file">
+              <button id="processOutputBrowseBtn" class="secondary-btn" type="button">Browse</button>
+            </div>
+          </label>
+        </div>
+        <div class="action-row">
+          <label class="field compact">
+            <span>Mode</span>
+            <select id="processMode">
+              <option value="extract-audio">Extract audio</option>
+              <option value="remux-mp4">Remux to MP4</option>
+              <option value="transcode-h264">Transcode to H.264</option>
+            </select>
+          </label>
+          <button id="processBtn" class="accent-btn" type="button">Run local process</button>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="renderer.js"></script>
+</body>
+</html>

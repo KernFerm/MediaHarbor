@@ -1,0 +1,86 @@
+{
+  "name": "mediaharbor",
+  "version": "0.0.45",
+  "description": "Lawful personal media downloader and local media processing tool for public content only.",
+  "main": "main.js",
+  "author": "OpenAI Codex",
+  "license": "UNLICENSED",
+  "type": "commonjs",
+  "scripts": {
+    "start": "electron .",
+    "dev": "cross-env NODE_ENV=development electron .",
+    "backend": "node server/server.js",
+    "check": "node --check main.js && node --check preload.js && node --check renderer.js && node --check src/downloadManager.js && node --check src/metadata.js && node --check src/settings.js && node --check src/history.js && node --check src/localProcessor.js && node --check src/security.js && node --check src/encryption.js && node --check src/tunnelClient.js && node --check server/server.js && node --check server/routes/download.js && node --check server/routes/tunnel.js && node --check server/security/rateLimit.js && node --check server/security/botProtection.js && node --check server/security/encryption.js",
+    "prepare:ffmpeg": "node scripts/prepare-ffmpeg.js",
+    "prepack": "npm run prepare:ffmpeg",
+    "pack": "electron-builder --dir",
+    "predist:win": "npm run prepare:ffmpeg",
+    "dist:win": "electron-builder --win nsis"
+  },
+  "build": {
+    "appId": "com.mediaharbor.app",
+    "productName": "MediaHarbor",
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer.js",
+      "index.html",
+      "styles.css",
+      "src/**/*",
+      "server/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "extraResources": [
+      {
+        "from": ".",
+        "to": ".",
+        "filter": [
+          "yt-dlp.exe",
+          "ffmpeg.exe",
+          "ffprobe.exe"
+        ]
+      }
+    ],
+    "asar": true,
+    "win": {
+      "forceCodeSigning": false,
+      "signAndEditExecutable": false,
+      "target": [
+        "portable",
+        "nsis"
+      ],
+      "artifactName": "MediaHarbor-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": true,
+      "include": "build/installer.nsh",
+      "license": null,
+      "warningsAsErrors": false,
+      "shortcutName": "MediaHarbor",
+      "uninstallDisplayName": "MediaHarbor",
+      "artifactName": "MediaHarbor-Setup-${version}.${ext}"
+    }
+  },
+  "dependencies": {
+    "compression": "^1.8.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "electron-store": "^10.1.0",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.1",
+    "helmet": "^8.1.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "electron": "^41.3.0",
+    "electron-builder": "^26.0.12"
+  }
+}

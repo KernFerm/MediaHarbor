@@ -1,0 +1,136 @@
+# Privacy and Data Collection
+
+MediaHarbor is designed to be transparent about privacy, data handling, and what information is processed during normal use.
+
+## Summary
+
+- No ads
+- No user accounts
+- No telemetry
+- No analytics
+- No intentional user tracking
+- No cloud sync
+- No sale of personal data
+
+## What the App Stores Locally
+
+The desktop app may store the following data on your device:
+
+- App settings such as output folder, audio format preference, theme, and backend URL
+- Local download history, including file names, timestamps, status, and output paths
+- Temporary downloaded or processed media files that you explicitly save to your own selected folders
+
+Sensitive local settings are intended to be encrypted at rest. Download history is stored locally on your device and is not designed to be uploaded to a remote service.
+
+## What the App Does Not Collect
+
+MediaHarbor is not designed to collect:
+
+- Personal profiles
+- Account registrations
+- Analytics events
+- Advertising identifiers
+- Browsing history unrelated to the app
+- Persistent cloud activity records
+
+The app does not intentionally send usage telemetry to the developer.
+
+## Network Activity
+
+The app may make network requests in these cases:
+
+- To retrieve public media metadata from supported public platforms through your installed local tools
+- To download public media you request
+- To contact your optional configured backend when forced tunnel mode is enabled
+
+If you use normal local download mode, your device may connect directly to the original public media host through the local download toolchain.
+
+If you use forced tunnel mode, your device connects to the configured backend first, and the backend then requests the media stream on your behalf.
+
+## Optional Backend / Tunnel Mode
+
+Forced tunnel mode is optional.
+
+When enabled:
+
+- The desktop app sends download requests to the backend URL you configured
+- The backend streams media to the app without intending to store finished media on disk
+- The backend is intended to use in-memory request handling and short-lived tunnel authorization
+
+Important transparency note:
+
+- Your backend operator or hosting provider may still observe infrastructure-level traffic such as connection timing, bandwidth usage, or operational events depending on how the server is deployed
+- True privacy depends on how that backend is hosted, monitored, logged, and secured in practice
+
+If you operate your own backend, you are responsible for configuring it in a privacy-preserving way.
+
+## Temporary Data
+
+The app or local tools may create temporary working data during:
+
+- Downloads
+- Audio extraction
+- Remuxing
+- Transcoding
+
+These temporary files should remain local to your machine when local processing is used. If server-side processing is used in the future, the intended design is temporary streaming and immediate cleanup rather than storage.
+
+## Third-Party Tools
+
+This project may rely on local third-party tools such as:
+
+- `yt-dlp`
+- `ffmpeg`
+
+Those tools may have their own behavior, update cycles, output formats, and networking behavior. You should review and trust the versions you install on your system.
+
+## Logs
+
+The intended design goal is a zero-log or minimal-log posture for personal activity.
+
+- The desktop app is not designed to collect telemetry logs about your behavior
+- Download history is local to your device
+- The backend should not be configured to store personal request history
+
+Operational reality note:
+
+- Operating systems, antivirus software, reverse proxies, hosting platforms, firewalls, or external infrastructure may generate their own logs outside the app itself
+- Those external logs are not controlled entirely by this application
+
+## Legal Use
+
+MediaHarbor is intended only for lawful personal use with public content.
+
+It is not intended to:
+
+- Bypass DRM
+- Bypass paywalls
+- Access private accounts
+- Scrape login-gated content
+- Infringe copyright
+
+You are responsible for complying with local laws, platform terms, and content rights.
+
+## Your Control
+
+You remain in control of:
+
+- Whether to use the app at all
+- Whether to enable forced tunnel mode
+- Which output folder to use
+- Whether to clear local history
+- Which tools and backend you trust
+
+## Questions for End Users
+
+Before using the app, a privacy-conscious user should understand:
+
+- Whether downloads are direct or tunneled
+- Which backend URL is configured
+- Whether the backend is self-hosted or hosted by a third party
+- Whether local history is acceptable on the device
+- Whether installed third-party tools are trusted
+
+## Plain-English Transparency Statement
+
+MediaHarbor is built to avoid hidden tracking and unnecessary data collection. It still processes the URLs and media you choose because that is required for downloading and local processing. If you enable optional backend tunneling, privacy depends partly on how that backend is deployed and operated.

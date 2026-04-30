@@ -1,0 +1,13 @@
+For MediaHarbor release builds:
+
+1. Download `ffmpeg-release-essentials.zip`
+2. Extract it
+3. Copy `ffmpeg.exe` and `ffprobe.exe` from the extracted `bin` folder
+4. Place both files in the project root next to `yt-dlp.exe`
+
+When you build MediaHarbor, Electron Builder will bundle:
+- `yt-dlp.exe`
+- `ffmpeg.exe`
+- `ffprobe.exe`
+
+End users will not need to install those separately if they are included in the build.
