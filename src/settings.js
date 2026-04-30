@@ -27,7 +27,12 @@ class SettingsStore {
     try {
       const encrypted = await fs.readFile(this.filePath, 'utf8');
       const parsed = decryptJson(encrypted);
-      return { ...DEFAULT_SETTINGS, ...parsed };
+      return {
+        ...DEFAULT_SETTINGS,
+        ...parsed,
+        backendBaseUrl: parsed?.backendBaseUrl || DEFAULT_SETTINGS.backendBaseUrl,
+        backendAccessToken: parsed?.backendAccessToken || DEFAULT_SETTINGS.backendAccessToken
+      };
     } catch {
       return { ...DEFAULT_SETTINGS };
     }
