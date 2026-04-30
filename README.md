@@ -104,4 +104,4 @@ Depending on your Windows settings, you may see a SmartScreen notice the first t
 
 ## 📄 License
 
-MediaHarbor is distributed under a proprietary copyright license. End users are allowed to install and use the software for lawful personal use, but copying, modifying, redistributing, or commercially reusing it is not allowed without permission.
+- > Apache 2.0
