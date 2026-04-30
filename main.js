@@ -1,9 +1,11 @@
 const path = require('path');
 const fs = require('fs/promises');
+const crypto = require('crypto');
 const { app, BrowserWindow, ipcMain, dialog, nativeTheme, shell, Menu } = require('electron');
 const dotenv = require('dotenv');
 
 dotenv.config();
+bootstrapRuntimeEnv();
 
 const { DownloadManager } = require('./src/downloadManager');
 const { fetchMetadata } = require('./src/metadata');
@@ -33,6 +35,34 @@ const downloadManager = new DownloadManager({
     }
   }
 });
+
+function bootstrapRuntimeEnv() {
+  const localPort = process.env.LOCAL_BACKEND_PORT || process.env.APP_PORT || '3467';
+
+  if (!process.env.APP_PORT) {
+    process.env.APP_PORT = localPort;
+  }
+
+  if (!process.env.LOCAL_BACKEND_PORT) {
+    process.env.LOCAL_BACKEND_PORT = localPort;
+  }
+
+  if (!process.env.BACKEND_BASE_URL) {
+    process.env.BACKEND_BASE_URL = `http://127.0.0.1:${localPort}`;
+  }
+
+  if (!process.env.BUBBLES_START_LOCAL_BACKEND) {
+    process.env.BUBBLES_START_LOCAL_BACKEND = 'true';
+  }
+
+  if (!process.env.BACKEND_SHARED_SECRET) {
+    process.env.BACKEND_SHARED_SECRET = crypto.randomBytes(32).toString('hex');
+  }
+
+  if (!process.env.BACKEND_ACCESS_TOKEN) {
+    process.env.BACKEND_ACCESS_TOKEN = crypto.randomBytes(24).toString('base64url');
+  }
+}
 
 function escapeHtml(value) {
   return String(value)
@@ -330,7 +360,7 @@ function createWindow() {
 }
 
 function maybeStartBundledBackend() {
-  if (process.env.BUBBLES_START_LOCAL_BACKEND !== 'true') {
+  if (process.env.BUBBLES_START_LOCAL_BACKEND === 'false') {
     return;
   }
 
@@ -339,7 +369,11 @@ function maybeStartBundledBackend() {
   backendProcess = fork(serverEntry, [], {
     env: {
       ...process.env,
-      APP_PORT: process.env.LOCAL_BACKEND_PORT || process.env.APP_PORT || '3467'
+      NODE_ENV: 'development',
+      APP_PORT: process.env.LOCAL_BACKEND_PORT || process.env.APP_PORT || '3467',
+      BACKEND_BASE_URL: process.env.BACKEND_BASE_URL,
+      BACKEND_SHARED_SECRET: process.env.BACKEND_SHARED_SECRET,
+      BACKEND_ACCESS_TOKEN: process.env.BACKEND_ACCESS_TOKEN
     },
     silent: !isDevelopment
   });
