@@ -6,7 +6,9 @@ const { ensureDirectory, getDefaultDownloadsDir, validateBackendBaseUrl } = requ
 const DEFAULT_SETTINGS = {
   outputDir: getDefaultDownloadsDir(),
   audioFormat: 'mp3',
-  backendBaseUrl: process.env.BACKEND_BASE_URL ? validateBackendBaseUrl(process.env.BACKEND_BASE_URL) : '',
+  backendBaseUrl: process.env.BACKEND_BASE_URL
+    ? validateBackendBaseUrl(process.env.BACKEND_BASE_URL)
+    : 'http://127.0.0.1:3467',
   backendAccessToken: process.env.BACKEND_ACCESS_TOKEN || '',
   forceTunnel: process.env.FORCED_TUNNEL_DEFAULT === 'true',
   theme: 'dark',
