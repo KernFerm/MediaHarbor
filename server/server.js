@@ -36,7 +36,16 @@ app.disable('x-powered-by');
 app.set('trust proxy', getTrustProxySetting());
 
 app.use(helmet({
-  contentSecurityPolicy: false,
+  contentSecurityPolicy: {
+    useDefaults: false,
+    directives: {
+      defaultSrc: ["'none'"],
+      baseUri: ["'none'"],
+      frameAncestors: ["'none'"],
+      formAction: ["'none'"],
+      objectSrc: ["'none'"]
+    }
+  },
   crossOriginEmbedderPolicy: false
 }));
 app.use(compression());
