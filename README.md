@@ -1,5 +1,10 @@
 # MediaHarbor
 
+![Version](https://img.shields.io/badge/version-0.0.55-2ea44f)
+![Platform](https://img.shields.io/badge/platform-Windows-0078d4)
+![Electron](https://img.shields.io/badge/Electron-42.0.0-47848f?logo=electron&logoColor=white)
+![License](https://img.shields.io/badge/license-Apache_2.0-blue)
+
 Save public media to your PC with a simple, clean workflow. Paste a public link, preview it, choose where you want it saved, and download it locally. 🌊
 
 ## 💡 What MediaHarbor Is
