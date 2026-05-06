@@ -6,7 +6,7 @@ This document explains the current security posture of MediaHarbor, how security
 
 The currently supported release covered by this document is:
 
-# ✅ `0.0.47`
+- ✅ `0.0.55`
 
 ## Supported Scope
 
