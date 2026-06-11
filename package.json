@@ -1,6 +1,6 @@
 {
   "name": "mediaharbor",
-  "version": "0.0.55",
+  "version": "0.0.67",
   "description": "Lawful personal media downloader and local media processing tool for public content only.",
   "main": "main.js",
   "author": "BubblesTheDev",
@@ -75,12 +75,12 @@
     "dotenv": "^17.4.2",
     "electron-store": "^11.0.2",
     "express": "^5.1.0",
-    "express-rate-limit": "^8.5.2",
-    "helmet": "^8.2.0"
+    "express-rate-limit": "^8.4.1",
+    "helmet": "^8.1.0"
   },
   "devDependencies": {
     "cross-env": "^10.1.0",
-    "electron": "^42.3.3",
+    "electron": "^42.4.0",
     "electron-builder": "^26.15.2"
   }
 }
