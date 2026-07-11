@@ -4,7 +4,7 @@ This document gives a short overview of MediaHarbor's current security posture a
 
 ## Supported Version
 
-- `0.0.67`
+- `0.0.80`
 
 ## Security Scope
 
