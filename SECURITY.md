@@ -24,9 +24,12 @@ The project does not include:
 - `contextIsolation` and `sandbox` are enabled
 - external links are validated before opening
 - public URLs are validated before use
+- tunnel/backend URLs now include DNS-backed blocking for private, loopback, and link-local targets
 - filenames are sanitized before files are written
+- output paths are checked to stay inside the selected folder
 - raw user input is not passed directly into shell commands
-- sensitive settings are encrypted locally
+- sensitive settings are encrypted locally with a per-install secret
+- older local settings can be migrated forward to the stronger encryption model
 - download history stays on the local device
 
 ## Reporting Security Issues
@@ -45,4 +48,4 @@ Include:
 
 - unsigned Windows installers may still trigger SmartScreen warnings
 - bundled tools like `yt-dlp` and `ffmpeg` should be kept up to date
-- `0.0.67` includes a refreshed bundled `yt-dlp.exe` and updated app dependencies
+- `0.0.80` includes refreshed bundled media tools and the current URL-validation and local-encryption hardening
