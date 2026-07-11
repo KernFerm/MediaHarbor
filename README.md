@@ -1,6 +1,6 @@
 # MediaHarbor
 
-![Version](https://img.shields.io/badge/version-0.0.67-2ea44f)
+![Version](https://img.shields.io/badge/version-0.0.80-2ea44f)
 ![Platform](https://img.shields.io/badge/platform-Windows-0078d4)
 ![Electron](https://img.shields.io/badge/Electron-42.4.0-47848f?logo=electron&logoColor=white)
 ![License](https://img.shields.io/badge/license-Apache_2.0-blue)
