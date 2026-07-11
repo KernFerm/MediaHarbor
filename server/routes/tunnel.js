@@ -1,26 +1,8 @@
 const express = require('express');
 const { encryptTunnelMetadata, createTunnelToken, requireTunnelAccessToken } = require('../security/encryption');
+const { assertResolvablePublicHttpUrl } = require('../../src/security');
 
 const router = express.Router();
-
-function validatePublicUrl(input) {
-  let parsed;
-  try {
-    parsed = new URL(input);
-  } catch {
-    throw new Error('Invalid URL.');
-  }
-
-  if (!['http:', 'https:'].includes(parsed.protocol)) {
-    throw new Error('Only HTTP and HTTPS URLs are accepted.');
-  }
-
-  if (/^(localhost|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[0-1])\.)/i.test(parsed.hostname)) {
-    throw new Error('Private or loopback targets are not allowed.');
-  }
-
-  return parsed.toString();
-}
 
 function validateAllowedMediaHost(input) {
   const configured = String(process.env.ALLOWED_MEDIA_HOSTS || '')
@@ -41,9 +23,9 @@ function validateAllowedMediaHost(input) {
   return input;
 }
 
-router.post('/manifest', requireTunnelAccessToken, (req, res, next) => {
+router.post('/manifest', requireTunnelAccessToken, async (req, res, next) => {
   try {
-    const safeUrl = validateAllowedMediaHost(validatePublicUrl(req.body.url));
+    const safeUrl = validateAllowedMediaHost(await assertResolvablePublicHttpUrl(req.body.url));
     const expiresAt = Date.now() + 60_000;
     const tunnelMetadata = encryptTunnelMetadata({
       downloadIntent: 'public-media-only',
