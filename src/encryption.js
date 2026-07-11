@@ -1,8 +1,15 @@
 const crypto = require('crypto');
 
+function getLegacyFallbackSecret() {
+  return process.env.BUBBLES_LOCAL_SETTINGS_SECRET || `${process.env.USERNAME || 'user'}:${process.platform}:${process.arch}`;
+}
+
 function deriveKey(secret) {
-  const material = secret || process.env.BUBBLES_LOCAL_SETTINGS_SECRET || `${process.env.USERNAME || 'user'}:${process.platform}:${process.arch}`;
-  return crypto.createHash('sha256').update(material).digest();
+  if (!secret) {
+    throw new Error('A settings encryption secret is required.');
+  }
+
+  return crypto.createHash('sha256').update(String(secret), 'utf8').digest();
 }
 
 function encryptJson(value, secret) {
@@ -38,5 +45,6 @@ function decryptJson(serialized, secret) {
 
 module.exports = {
   encryptJson,
-  decryptJson
+  decryptJson,
+  getLegacyFallbackSecret
 };
