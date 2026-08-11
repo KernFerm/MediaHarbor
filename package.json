@@ -1,6 +1,6 @@
 {
   "name": "mediaharbor",
-  "version": "0.0.80",
+  "version": "0.1.0",
   "description": "Lawful personal media downloader and local media processing tool for public content only.",
   "main": "main.js",
   "author": "BubblesTheDev",
