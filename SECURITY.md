@@ -4,7 +4,7 @@ This document gives a short overview of MediaHarbor's current security posture a
 
 ## Supported Version
 
-- `0.0.80`
+- `0.1.0`
 
 ## Security Scope
 
@@ -48,4 +48,4 @@ Include:
 
 - unsigned Windows installers may still trigger SmartScreen warnings
 - bundled tools like `yt-dlp` and `ffmpeg` should be kept up to date
-- `0.0.80` includes refreshed bundled media tools and the current URL-validation and local-encryption hardening
+- `0.1.0` includes current bundled media tools and the current URL-validation and local-encryption hardening
