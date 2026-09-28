@@ -4,7 +4,7 @@ This document gives a short overview of MediaHarbor's current security posture a
 
 ## Supported Version
 
-- `0.1.0`
+- `0.1.2`
 
 ## Security Scope
 
@@ -27,6 +27,8 @@ The project does not include:
 - tunnel/backend URLs now include DNS-backed blocking for private, loopback, and link-local targets
 - filenames are sanitized before files are written
 - output paths are checked to stay inside the selected folder
+- downloads use only the canonical output folder persisted through the native folder picker
+- the media streaming endpoint has a dedicated rate limit in addition to the backend-wide limit
 - raw user input is not passed directly into shell commands
 - sensitive settings are encrypted locally with a per-install secret
 - older local settings can be migrated forward to the stronger encryption model
@@ -48,4 +50,4 @@ Include:
 
 - unsigned Windows installers may still trigger SmartScreen warnings
 - bundled tools like `yt-dlp` and `ffmpeg` should be kept up to date
-- `0.1.0` includes current bundled media tools and the current URL-validation and local-encryption hardening
+- `0.1.2` includes official yt-dlp `2026.08.19`, FFmpeg/ffprobe `9.0.2`, and the current URL-validation and local-encryption hardening
