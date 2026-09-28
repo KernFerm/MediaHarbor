@@ -1,0 +1,16 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.25.1
+ignore: {}
+patch: {}
+exclude:
+  code:
+    - node_modules
+    - dist
+    - build
+    - release
+    - out
+    - coverage
+    - .env
+    - ffmpeg.exe
+    - ffprobe.exe
+    - yt-dlp.exe

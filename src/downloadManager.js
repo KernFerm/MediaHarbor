@@ -8,7 +8,7 @@ const {
   validatePublicUrl,
   sanitizeFileName,
   ensureInsideDirectory,
-  ensureDirectory,
+  resolveOutputDirectory,
   resolveBinary,
   getDefaultDownloadsDir
 } = require('./security');
@@ -26,13 +26,26 @@ class DownloadManager {
   async startDownload(request) {
     const settings = await this.settingsStore.load();
     const safeUrl = validatePublicUrl(request.url);
-    const outputDir = request.outputDir || settings.outputDir || getDefaultDownloadsDir();
-    ensureDirectory(outputDir);
+    const outputDir = resolveOutputDirectory(settings.outputDir || getDefaultDownloadsDir());
 
     const id = crypto.randomUUID();
     const displayTitle = buildMediaLabel(request.metadata);
     const title = sanitizeFileName(displayTitle);
     const fileStem = `${title}-${Date.now()}`;
+    const audioOnly = Boolean(request.audioOnly);
+    const audioFormat = normalizeAudioFormat(request.audioFormat);
+    const formatId = request.formatId ? String(request.formatId) : null;
+    const forcedTunnel = Boolean(request.forcedTunnel);
+    const jobOptions = {
+      outputDir,
+      fileStem,
+      title: displayTitle,
+      audioOnly,
+      audioFormat,
+      formatId,
+      backendBaseUrl: request.backendBaseUrl ? String(request.backendBaseUrl) : '',
+      backendAccessToken: request.backendAccessToken ? String(request.backendAccessToken) : ''
+    };
     const initial = {
       id,
       title: displayTitle,
@@ -47,34 +60,24 @@ class DownloadManager {
     this.jobs.set(id, initial);
     this.onStateChange({ ...initial, message: 'Download started.' });
 
-    if (request.forcedTunnel) {
-      if (!request.backendBaseUrl) {
+    if (forcedTunnel) {
+      if (!jobOptions.backendBaseUrl) {
         this.jobs.delete(id);
         throw new Error('Forced tunnel mode needs a backend URL. Use http://127.0.0.1:3467 for local testing or a real HTTPS backend in production.');
       }
-      this.runTunnelDownload(id, {
-        ...request,
-        url: safeUrl,
-        outputDir,
-        fileStem,
-        title: displayTitle
-      }).catch((error) => this.failJob(id, displayTitle, fileStem, outputDir, error));
+      this.runTunnelDownload(id, safeUrl, jobOptions)
+        .catch((error) => this.failJob(id, displayTitle, fileStem, outputDir, error));
     } else {
-      this.runLocalYtDlp(id, {
-        ...request,
-        url: safeUrl,
-        outputDir,
-        fileStem,
-        title: displayTitle
-      }).catch((error) => this.failJob(id, displayTitle, fileStem, outputDir, error));
+      this.runLocalYtDlp(id, safeUrl, jobOptions)
+        .catch((error) => this.failJob(id, displayTitle, fileStem, outputDir, error));
     }
 
-    return { id, message: request.forcedTunnel ? 'Tunnel download queued.' : 'Local download queued.' };
+    return { id, message: forcedTunnel ? 'Tunnel download queued.' : 'Local download queued.' };
   }
 
-  async runLocalYtDlp(id, request) {
+  async runLocalYtDlp(id, url, options) {
     const ytDlpPath = resolveBinary('yt-dlp');
-    const outputTemplate = ensureInsideDirectory(request.outputDir, `${request.fileStem}.%(ext)s`);
+    const outputTemplate = ensureInsideDirectory(options.outputDir, `${options.fileStem}.%(ext)s`);
     const args = [
       '--newline',
       '--no-playlist',
@@ -83,13 +86,13 @@ class DownloadManager {
       outputTemplate
     ];
 
-    if (request.audioOnly) {
-      args.push('--extract-audio', '--audio-format', request.audioFormat || 'mp3');
-    } else if (request.formatId) {
-      args.push('--format', request.formatId);
+    if (options.audioOnly) {
+      args.push('--extract-audio', '--audio-format', options.audioFormat || 'mp3');
+    } else if (options.formatId) {
+      args.push('--format', options.formatId);
     }
 
-    args.push(request.url);
+    args.push(url);
 
     const child = spawn(ytDlpPath, args, {
       stdio: ['ignore', 'pipe', 'pipe'],
@@ -115,7 +118,7 @@ class DownloadManager {
       if (this.jobs.get(id)?.cancelled) {
         return;
       }
-      this.failJob(id, request.title, request.fileStem, request.outputDir, new Error('MediaHarbor could not find yt-dlp. If it was not included with your copy of the app, add yt-dlp and try the download again.'));
+      this.failJob(id, options.title, options.fileStem, options.outputDir, new Error('MediaHarbor could not find yt-dlp. If it was not included with your copy of the app, add yt-dlp and try the download again.'));
     });
 
     child.on('close', async (code) => {
@@ -123,33 +126,33 @@ class DownloadManager {
         return;
       }
       if (code !== 0) {
-        this.failJob(id, request.title, request.fileStem, request.outputDir, new Error(stderr.trim() || 'Download failed.'));
+        this.failJob(id, options.title, options.fileStem, options.outputDir, new Error(stderr.trim() || 'Download failed.'));
         return;
       }
 
-      const fileName = this.discoverOutputFile(request.outputDir, request.fileStem);
+      const fileName = this.discoverOutputFile(options.outputDir, options.fileStem);
       await this.completeJob(id, {
-        title: request.title,
+        title: options.title,
         fileName,
-        outputPath: path.join(request.outputDir, fileName)
+        outputPath: ensureInsideDirectory(options.outputDir, fileName)
       });
     });
   }
 
-  async runTunnelDownload(id, request) {
-    const extension = request.audioOnly ? (request.audioFormat || 'mp3') : 'mp4';
-    const finalFileName = `${request.fileStem}.${extension}`;
-    const outputPath = ensureInsideDirectory(request.outputDir, finalFileName);
-    const tempOutputPath = ensureInsideDirectory(request.outputDir, `${finalFileName}.part`);
+  async runTunnelDownload(id, url, options) {
+    const extension = options.audioOnly ? (options.audioFormat || 'mp3') : 'mp4';
+    const finalFileName = `${options.fileStem}.${extension}`;
+    const outputPath = ensureInsideDirectory(options.outputDir, finalFileName);
+    const tempOutputPath = ensureInsideDirectory(options.outputDir, `.${options.fileStem}-${crypto.randomUUID()}.part`);
     const controller = new AbortController();
     const response = await requestTunnelStream({
-      backendBaseUrl: request.backendBaseUrl,
-      backendAccessToken: request.backendAccessToken,
-      url: request.url,
-      formatId: request.formatId,
-      audioOnly: request.audioOnly,
-      audioFormat: request.audioFormat,
-      fileName: request.fileStem,
+      backendBaseUrl: options.backendBaseUrl,
+      backendAccessToken: options.backendAccessToken,
+      url,
+      formatId: options.formatId,
+      audioOnly: options.audioOnly,
+      audioFormat: options.audioFormat,
+      fileName: options.fileStem,
       signal: controller.signal
     });
 
@@ -166,13 +169,13 @@ class DownloadManager {
     try {
       await new Promise((resolve, reject) => {
         const stream = Readable.fromWeb(response.body);
-        const target = fs.createWriteStream(tempOutputPath, { flags: 'w' });
+        const target = fs.createWriteStream(tempOutputPath, { flags: 'wx' });
         stream.on('data', (chunk) => {
           writtenBytes += chunk.length;
           const percent = totalBytes ? `${((writtenBytes / totalBytes) * 100).toFixed(1)}%` : 'Streaming';
           this.onProgress({
             id,
-            title: request.title,
+            title: options.title,
             fileName: finalFileName,
             percent,
             speed: `${Math.round(writtenBytes / 1024)} KB transferred`,
@@ -192,7 +195,7 @@ class DownloadManager {
     }
 
     await this.completeJob(id, {
-      title: request.title,
+      title: options.title,
       fileName: finalFileName,
       outputPath
     });
@@ -223,7 +226,9 @@ class DownloadManager {
   }
 
   discoverOutputFile(outputDir, fileStem) {
-    const matches = fs.readdirSync(outputDir).filter((entry) => entry.startsWith(fileStem));
+    const matches = fs.readdirSync(outputDir, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && entry.name.startsWith(`${fileStem}.`))
+      .map((entry) => entry.name);
     return matches.sort().at(-1) || fileStem;
   }
 
@@ -333,4 +338,10 @@ function buildMediaLabel(metadata) {
 function cleanMetadataText(value) {
   const next = String(value || '').trim();
   return next || '';
+}
+
+function normalizeAudioFormat(value) {
+  const supportedFormats = new Set(['mp3', 'm4a', 'wav', 'flac', 'opus']);
+  const format = String(value || 'mp3').toLowerCase();
+  return supportedFormats.has(format) ? format : 'mp3';
 }

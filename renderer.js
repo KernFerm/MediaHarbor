@@ -144,7 +144,6 @@ async function onStartDownload() {
   const selectedFormat = els.qualitySelect.value || null;
   const request = {
     url,
-    outputDir,
     formatId: selectedFormat,
     audioOnly: els.audioOnlyToggle.checked,
     audioFormat: els.audioFormatSelect.value,

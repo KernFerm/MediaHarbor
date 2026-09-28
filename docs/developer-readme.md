@@ -30,16 +30,16 @@ npm install
 
 This installs Electron, Express, electron-builder, and the rest of the project dependencies.
 
-Current project versions in `0.1.0` include:
+Current project versions in `0.1.2` include:
 
-- `electron` `^43.3.0`
+- `electron` `^44.4.5`
 - `electron-builder` `^26.15.3`
 - `express` `^5.1.0`
-- `dotenv` `^17.4.2`
+- `dotenv` `^18.0.4`
 - `electron-store` `^11.0.2`
-- `compression` `^1.8.1`
+- `compression` `^1.8.2`
 - `cors` `^2.8.5`
-- `express-rate-limit` `^8.6.2`
+- `express-rate-limit` `^8.7.0`
 - `helmet` `^8.3.0`
 
 ## Project Tools
@@ -52,7 +52,7 @@ MediaHarbor expects these tools for local media features:
 
 ### yt-dlp
 
-For local development, place the project-approved `yt-dlp.exe` from KernFerm release `2026-07-05-yt-dlp` in the project root:
+For local development, place the project-approved official `yt-dlp.exe` stable release `2026.08.19` in the project root:
 
 ```text
 MediaHarbor/
@@ -194,7 +194,7 @@ ffmpeg.exe
 ffprobe.exe
 ```
 
-For `0.1.0`, re-check `yt-dlp.exe` before packaging so the Windows build includes the project-approved `2026-07-05-yt-dlp` binary.
+For `0.1.2`, re-check `yt-dlp.exe` before packaging so the Windows build includes the project-approved official `2026.08.19` binary. The bundled FFmpeg and ffprobe executables should report `9.0.2-essentials_build-www.gyan.dev`.
 
 ## Project Structure
 

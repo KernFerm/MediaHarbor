@@ -1,6 +1,6 @@
 {
   "name": "mediaharbor",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Lawful personal media downloader and local media processing tool for public content only.",
   "main": "main.js",
   "author": "BubblesTheDev",
@@ -10,6 +10,7 @@
     "start": "electron .",
     "dev": "cross-env NODE_ENV=development electron .",
     "backend": "node server/server.js",
+    "test": "node --test tests/security-fixes.test.js",
     "check": "node --check main.js && node --check preload.js && node --check renderer.js && node --check src/downloadManager.js && node --check src/metadata.js && node --check src/settings.js && node --check src/history.js && node --check src/localProcessor.js && node --check src/security.js && node --check src/encryption.js && node --check src/tunnelClient.js && node --check server/server.js && node --check server/routes/download.js && node --check server/routes/tunnel.js && node --check server/security/rateLimit.js && node --check server/security/botProtection.js && node --check server/security/encryption.js",
     "prepare:ffmpeg": "node scripts/prepare-ffmpeg.js",
     "prepack": "npm run prepare:ffmpeg",
@@ -70,17 +71,17 @@
     }
   },
   "dependencies": {
-    "compression": "^1.8.1",
+    "compression": "^1.8.2",
     "cors": "^2.8.5",
-    "dotenv": "^17.4.2",
+    "dotenv": "^18.0.4",
     "electron-store": "^11.0.2",
     "express": "^5.1.0",
-    "express-rate-limit": "^8.6.2",
+    "express-rate-limit": "^8.7.0",
     "helmet": "^8.3.0 "
   },
   "devDependencies": {
     "cross-env": "^10.1.0",
-    "electron": "^44.0.0",
+    "electron": "^44.4.5",
     "electron-builder": "^26.15.3"
   }
 }

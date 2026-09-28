@@ -1,15 +1,27 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const { spawn } = require('child_process');
 const { verifyTunnelToken, requireTunnelAccessToken } = require('../security/encryption');
 const { assertResolvablePublicHttpUrl } = require('../../src/security');
 
 const router = express.Router();
+const streamRateLimiter = rateLimit({
+  windowMs: Number(process.env.DOWNLOAD_RATE_LIMIT_WINDOW_MS || 60_000),
+  max: Number(process.env.DOWNLOAD_RATE_LIMIT_MAX || 10),
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (_req, res) => {
+    res.status(429).json({
+      error: 'Too many download requests. Wait before starting another stream.'
+    });
+  }
+});
 
 function getYtDlpPath() {
   return process.env.YT_DLP_PATH || process.env.YT_DLP || 'yt-dlp';
 }
 
-router.post('/stream', requireTunnelAccessToken, verifyTunnelToken, async (req, res, next) => {
+router.post('/stream', streamRateLimiter, requireTunnelAccessToken, verifyTunnelToken, async (req, res, next) => {
   try {
     const safeUrl = await assertResolvablePublicHttpUrl(req.body.url);
     if (req.tunnelSession?.url !== safeUrl) {

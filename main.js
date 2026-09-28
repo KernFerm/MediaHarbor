@@ -12,7 +12,7 @@ const { fetchMetadata } = require('./src/metadata');
 const { SettingsStore, DEFAULT_SETTINGS } = require('./src/settings');
 const { HistoryStore } = require('./src/history');
 const { processMediaLocally } = require('./src/localProcessor');
-const { isSafeExternalUrl } = require('./src/security');
+const { isSafeExternalUrl, resolveOutputDirectory } = require('./src/security');
 
 let mainWindow;
 let backendProcess = null;
@@ -318,6 +318,21 @@ function createWindow() {
       devTools: isDevelopment
     }
   });
+  let hasShownWindow = false;
+  let showFallbackTimer = null;
+
+  const showMainWindow = () => {
+    if (!mainWindow || mainWindow.isDestroyed() || hasShownWindow) {
+      return;
+    }
+
+    hasShownWindow = true;
+    if (showFallbackTimer) {
+      clearTimeout(showFallbackTimer);
+      showFallbackTimer = null;
+    }
+    mainWindow.show();
+  };
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     if (isSafeExternalUrl(url)) {
@@ -352,11 +367,42 @@ function createWindow() {
   });
 
   mainWindow.once('ready-to-show', () => {
-    mainWindow.show();
+    showMainWindow();
+  });
+
+  mainWindow.webContents.once('did-finish-load', () => {
+    showMainWindow();
+  });
+
+  mainWindow.webContents.on('did-fail-load', (_event, errorCode, errorDescription, validatedURL, isMainFrame) => {
+    if (!isMainFrame) {
+      return;
+    }
+
+    console.error('MediaHarbor failed to load the main window.', {
+      errorCode,
+      errorDescription,
+      validatedURL
+    });
+    showMainWindow();
+  });
+
+  mainWindow.webContents.on('render-process-gone', (_event, details) => {
+    console.error('MediaHarbor renderer process exited unexpectedly.', details);
+    showMainWindow();
+  });
+
+  mainWindow.on('unresponsive', () => {
+    console.error('MediaHarbor main window became unresponsive during startup.');
+    showMainWindow();
   });
 
   attachContextMenu(mainWindow);
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
+  showFallbackTimer = setTimeout(() => {
+    console.error('MediaHarbor startup fallback triggered before ready-to-show.');
+    showMainWindow();
+  }, 3000);
 }
 
 function maybeStartBundledBackend() {
@@ -427,7 +473,9 @@ ipcMain.handle('dialog:select-output-folder', async () => {
     return null;
   }
 
-  return result.filePaths[0];
+  const outputDir = resolveOutputDirectory(result.filePaths[0]);
+  await settingsStore.save({ outputDir });
+  return outputDir;
 });
 
 ipcMain.handle('dialog:select-input-file', async () => {
@@ -476,7 +524,21 @@ ipcMain.handle('metadata:fetch', async (_event, payload) => {
 });
 
 ipcMain.handle('settings:save', async (_event, partialSettings) => {
-  return settingsStore.save(partialSettings);
+  const current = await settingsStore.load();
+  const requestedOutputDir = partialSettings?.outputDir;
+  const currentOutputDir = resolveOutputDirectory(current.outputDir);
+  if (requestedOutputDir) {
+    if (typeof requestedOutputDir !== 'string'
+      || !path.isAbsolute(requestedOutputDir)
+      || path.resolve(requestedOutputDir) !== currentOutputDir) {
+      throw new Error('Use the Browse button to change the output folder.');
+    }
+  }
+
+  return settingsStore.save({
+    ...partialSettings,
+    outputDir: currentOutputDir
+  });
 });
 
 ipcMain.handle('history:clear', async () => {

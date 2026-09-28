@@ -170,6 +170,25 @@ function ensureDirectory(dirPath) {
   return dirPath;
 }
 
+function resolveOutputDirectory(dirPath) {
+  if (typeof dirPath !== 'string' || !dirPath.trim() || dirPath.includes('\0')) {
+    throw new Error('Choose a valid output folder.');
+  }
+
+  if (!path.isAbsolute(dirPath)) {
+    throw new Error('The output folder must be an absolute path.');
+  }
+
+  const resolved = path.resolve(dirPath);
+  ensureDirectory(resolved);
+  const canonical = fs.realpathSync.native(resolved);
+  if (!fs.statSync(canonical).isDirectory()) {
+    throw new Error('The selected output path is not a folder.');
+  }
+
+  return canonical;
+}
+
 function getDefaultDownloadsDir() {
   return path.join(os.homedir(), 'Downloads', 'MediaHarbor');
 }
@@ -182,6 +201,7 @@ module.exports = {
   ensureInsideDirectory,
   resolveBinary,
   ensureDirectory,
+  resolveOutputDirectory,
   getDefaultDownloadsDir,
   isSafeExternalUrl
 };
