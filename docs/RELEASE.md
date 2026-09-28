@@ -1,6 +1,6 @@
 # MediaHarbor Release Notes
 
-## MediaHarbor 0.1.0
+## MediaHarbor 0.1.2
 
 MediaHarbor is a desktop app for saving supported public media to your PC with a simple local-first workflow.
 
@@ -12,31 +12,31 @@ This release includes:
 - local media processing tools
 - local-only history storage
 - a Windows installer with license and privacy acknowledgement
-- bundled `yt-dlp.exe` from KernFerm release `2026-07-05-yt-dlp`
-- bundled `ffmpeg.exe` `9.0-essentials_build-www.gyan.dev`
-- bundled `ffprobe.exe` `9.0-essentials_build-www.gyan.dev`
+- bundled official `yt-dlp.exe` stable release `2026.08.19`
+- bundled `ffmpeg.exe` `9.0.2-essentials_build-www.gyan.dev`
+- bundled `ffprobe.exe` `9.0.2-essentials_build-www.gyan.dev`
 - stronger tunnel/backend SSRF protections with DNS-backed private-address blocking
 - stronger local settings encryption with a per-install secret and automatic migration from older local data
 
 ## Included In This Windows Release
 
-- `MediaHarbor-Setup-0.1.0.exe`
-- bundled `yt-dlp.exe` from KernFerm release `2026-07-05-yt-dlp`
-- bundled `ffmpeg.exe` `9.0-essentials_build-www.gyan.dev`
-- bundled `ffprobe.exe` `9.0-essentials_build-www.gyan.dev`
+- `MediaHarbor-Setup-0.1.2.exe`
+- bundled official `yt-dlp.exe` stable release `2026.08.19`
+- bundled `ffmpeg.exe` `9.0.2-essentials_build-www.gyan.dev`
+- bundled `ffprobe.exe` `9.0.2-essentials_build-www.gyan.dev`
 
 End users should not need to install those tools separately for the packaged app.
 
-Dependency versions in `0.1.0` include:
+Dependency versions in `0.1.2` include:
 
-- `electron` `^43.3.0`
+- `electron` `^44.4.5`
 - `electron-builder` `^26.15.3`
 - `express` `^5.1.0`
-- `dotenv` `^17.4.2`
+- `dotenv` `^18.0.4`
 - `electron-store` `^11.0.2`
-- `compression` `^1.8.1`
+- `compression` `^1.8.2`
 - `cors` `^2.8.5`
-- `express-rate-limit` `^8.6.2`
+- `express-rate-limit` `^8.7.0`
 - `helmet` `^8.3.0`
 
 ## How To Use
