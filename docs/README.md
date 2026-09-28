@@ -1,8 +1,8 @@
 # MediaHarbor
 
-![Version](https://img.shields.io/badge/version-0.1.0-2ea44f)
+![Version](https://img.shields.io/badge/version-0.1.2-2ea44f)
 ![Platform](https://img.shields.io/badge/platform-Windows-0078d4)
-![Electron](https://img.shields.io/badge/Electron-43.3.0-47848f?logo=electron&logoColor=white)
+![Electron](https://img.shields.io/badge/Electron-44.4.5-47848f?logo=electron&logoColor=white)
 ![License](https://img.shields.io/badge/license-Apache_2.0-blue)
 
 Save public media to your PC with a simple local-first workflow. Paste a supported public link, preview it, choose where to save it, and download it locally.
@@ -60,11 +60,11 @@ Please make sure you have permission to save the content you download.
 
 ## Security Notes
 
-Version `0.1.0` includes:
+Version `0.1.2` includes:
 
-- bundled `yt-dlp.exe` from KernFerm release `2026-07-05-yt-dlp`
-- bundled `ffmpeg.exe` `9.0-essentials_build-www.gyan.dev`
-- bundled `ffprobe.exe` `9.0-essentials_build-www.gyan.dev`
+- bundled official `yt-dlp.exe` stable release `2026.08.19`
+- bundled `ffmpeg.exe` `9.0.2-essentials_build-www.gyan.dev`
+- bundled `ffprobe.exe` `9.0.2-essentials_build-www.gyan.dev`
 - stronger tunnel/backend URL validation, including DNS-backed checks against private and loopback targets
 - stronger local settings encryption that no longer falls back to a predictable machine-derived key
 
