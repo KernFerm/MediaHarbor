@@ -73,7 +73,7 @@
   "dependencies": {
     "compression": "^1.8.2",
     "cors": "^2.8.5",
-    "dotenv": "^18.0.4",
+    "dotenv": "^18.0.5",
     "electron-store": "^11.0.2",
     "express": "^5.1.0",
     "express-rate-limit": "^8.7.0",
