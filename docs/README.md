@@ -1,8 +1,8 @@
 # MediaHarbor
 
-![Version](https://img.shields.io/badge/version-0.1.2-2ea44f)
+![Version](https://img.shields.io/badge/version-0.2.4-2ea44f)
 ![Platform](https://img.shields.io/badge/platform-Windows-0078d4)
-![Electron](https://img.shields.io/badge/Electron-44.4.5-47848f?logo=electron&logoColor=white)
+![Electron](https://img.shields.io/badge/Electron-44.6.0-47848f?logo=electron&logoColor=white)
 ![License](https://img.shields.io/badge/license-Apache_2.0-blue)
 
 Save public media to your PC with a simple local-first workflow. Paste a supported public link, preview it, choose where to save it, and download it locally.
@@ -60,7 +60,7 @@ Please make sure you have permission to save the content you download.
 
 ## Security Notes
 
-Version `0.1.2` includes:
+Version `0.2.4` includes:
 
 - bundled official `yt-dlp.exe` stable release `2026.08.19`
 - bundled `ffmpeg.exe` `9.0.2-essentials_build-www.gyan.dev`

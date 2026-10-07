@@ -4,7 +4,7 @@ This document gives a short overview of MediaHarbor's current security posture a
 
 ## Supported Version
 
-- `0.1.2`
+- `0.2.4`
 
 ## Security Scope
 
@@ -50,4 +50,4 @@ Include:
 
 - unsigned Windows installers may still trigger SmartScreen warnings
 - bundled tools like `yt-dlp` and `ffmpeg` should be kept up to date
-- `0.1.2` includes official yt-dlp `2026.08.19`, FFmpeg/ffprobe `9.0.2`, and the current URL-validation and local-encryption hardening
+- `0.2.4` includes official yt-dlp `2026.08.19`, FFmpeg/ffprobe `9.0.2`, current URL-validation and local-encryption hardening, and dependency updates verified by npm audit and Snyk
